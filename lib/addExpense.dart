@@ -34,9 +34,11 @@ class _AddExpenseState extends State<AddExpenseScreen> {
         backgroundColor: Colors.indigo,
         title: Text("Add Expense"),
       ),
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
+      //resizeToAvoidBottomPadding: false,
       body: Form(
           key: _formKey,
+
           autovalidate: _autoValidate,
           child: Column(
             children: [
@@ -50,10 +52,6 @@ class _AddExpenseState extends State<AddExpenseScreen> {
                       size: 35,
                     ),
                     //tooltip: 'Second screen',
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/addexpense');
-                      //showOverlay(context);
-                    },
                     color: Colors.indigo,
                   ),
                   Text(

@@ -7,6 +7,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:ispent/database/database_helper.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:ispent/utilities.dart';
+
 var db = new DatabaseHelper();
 List<charts.Series> seriesList = new List<charts.Series>();
 final bool animate = false;
@@ -15,16 +16,16 @@ var test;
 Map<String, double> dataMap = Map();
 
 class Report extends StatefulWidget {
-
   final int month;
   final int year;
   final int mode;
 
-  Report(this.month,
-      this.year,
-      this.mode, {
-        Key key,
-      }) : super(key: key);
+  Report(
+    this.month,
+    this.year,
+    this.mode, {
+    Key key,
+  }) : super(key: key);
 
   @override
   _ReportState createState() => _ReportState();
@@ -34,6 +35,7 @@ class _ReportState extends State<Report> {
   bool toggle = false;
   Map<String, double> dataMap = new Map();
   int chartType = 0;
+
   double getCategoryAmount(List<Expenditure> source, String categoryName) {
     double totalAmount = 0;
     for (int i = 0; i < source.length; i++) {
@@ -43,6 +45,7 @@ class _ReportState extends State<Report> {
     }
     return totalAmount;
   }
+
   Future<List<Expenditure>> getExpenseList() {
     return db.getExpenses(widget.month, widget.year, widget.mode);
   }
@@ -52,7 +55,7 @@ class _ReportState extends State<Report> {
     // Disable animations for image tests.
     super.initState();
     chartType = 0;
-   }
+  }
 
   void prepareChartData(List<Expenditure> expenses) {
     _categoryExpense = new List<Expenditure>();
@@ -62,10 +65,10 @@ class _ReportState extends State<Report> {
         categoryList.add(expenses[i].itemName);
       }
       List<String> distinctCategory =
-      LinkedHashSet<String>.from(categoryList).toList();
+          LinkedHashSet<String>.from(categoryList).toList();
       for (var j = 0; j < distinctCategory.length; j++) {
         double totalAmount =
-        getCategoryAmount(expenses, distinctCategory[j].toString());
+            getCategoryAmount(expenses, distinctCategory[j].toString());
         _categoryExpense.add(new Expenditure(
             totalAmount, distinctCategory[j].toString(), null, "", ""));
         dataMap.putIfAbsent(distinctCategory[j].toString(), () => totalAmount);
@@ -100,10 +103,10 @@ class _ReportState extends State<Report> {
         categoryList.add(expenses[i].itemName);
       }
       List<String> distinctCategory =
-      LinkedHashSet<String>.from(categoryList).toList();
+          LinkedHashSet<String>.from(categoryList).toList();
       for (var j = 0; j < distinctCategory.length; j++) {
         double totalAmount =
-        getCategoryAmount(expenses, distinctCategory[j].toString());
+            getCategoryAmount(expenses, distinctCategory[j].toString());
         _categoryExpense.add(new Expenditure(
             totalAmount, distinctCategory[j].toString(), null, "", ""));
         dataMap.putIfAbsent(distinctCategory[j].toString(), () => totalAmount);
@@ -123,71 +126,85 @@ class _ReportState extends State<Report> {
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: viewportConstraints.maxHeight,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-               Container(
-                  // Another fixed-height child.
-                    padding: EdgeInsets.only(left: 20,bottom:40),
-                    alignment: Alignment.topLeft,
-                    child: new FutureBuilder<List<Expenditure>>(
-                        future: getExpenseList(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) return Text("Error Occurred");
-                          if (snapshot.hasData) {
-                            var data = snapshot.data;
-                            var dataSeries = getPieChartData(data);
-                            if (dataMap != null && dataMap.isNotEmpty) {
-                              return new PieChart(
-                                dataMap: dataSeries,
-                                animationDuration: Duration(milliseconds: 800),
-                                chartLegendSpacing: 32.0,
-                                chartRadius: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width / 1.17,
-                                showChartValuesInPercentage: true,
-                                showChartValues: true,
-                                showChartValuesOutside: true,
-                                chartValueBackgroundColor: Colors.grey[200],
-                                colorList: colorList,
-                                showLegends: true,
-                                legendPosition: LegendPosition.right,
-                                decimalPlaces: 1,
-                                showChartValueLabel: true,
-                                initialAngle: 0,
-                                chartValueStyle: defaultChartValueStyle
-                                    .copyWith(
-                                  color: Colors.blueGrey[900].withOpacity(0.9),
-                                ),
-                                chartType: ChartType.disc,
-
-                              );
-                            } else {
-                              return Center(child:Align(alignment:Alignment.center , child:Text("No data found.")));
-                            }
-                          } else {
-                            return Center(child:Align(alignment:Alignment.center , child:Text("No data found.")));
-                          }
-
-                        })
-                ),
-                Container(
-                    child: _barChart(context)),
-              ],
-            ),
-          ),
+              constraints: BoxConstraints(
+                minHeight: viewportConstraints.maxHeight,
+              ),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text("Scroll to right for BAR CHART",
+                          style: TextStyle(fontStyle: FontStyle.italic,color: Colors.red,),
+                        )),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                            // Another fixed-height child.
+                            padding: EdgeInsets.only(left: 20, bottom: 40),
+                            alignment: Alignment.topLeft,
+                            child: new FutureBuilder<List<Expenditure>>(
+                                future: getExpenseList(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError)
+                                    return Text("Error Occurred");
+                                  if (snapshot.hasData) {
+                                    var data = snapshot.data;
+                                    var dataSeries = getPieChartData(data);
+                                    if (dataMap != null && dataMap.isNotEmpty) {
+                                      return new PieChart(
+                                        dataMap: dataSeries,
+                                        animationDuration:
+                                            Duration(milliseconds: 800),
+                                        chartLegendSpacing: 32.0,
+                                        chartRadius:
+                                            MediaQuery.of(context).size.width /
+                                                1.5,
+                                        showChartValuesInPercentage: true,
+                                        showChartValues: true,
+                                        showChartValuesOutside: true,
+                                        chartValueBackgroundColor:
+                                            Colors.grey[200],
+                                        colorList: colorList,
+                                        showLegends: true,
+                                        legendPosition: LegendPosition.right,
+                                        decimalPlaces: 1,
+                                        showChartValueLabel: true,
+                                        initialAngle: 0,
+                                        chartValueStyle:
+                                            defaultChartValueStyle.copyWith(
+                                          color: Colors.blueGrey[900]
+                                              .withOpacity(0.9),
+                                        ),
+                                        chartType: ChartType.disc,
+                                      );
+                                    } else {
+                                      return Center(
+                                          child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text("No data found.")));
+                                    }
+                                  } else {
+                                    return Center(
+                                        child: Align(
+                                            alignment: Alignment.center,
+                                            child: Text("No data found.")));
+                                  }
+                                })),
+                        Container(child: _barChart(context)),
+                      ],
+                    )
+                  ])),
         );
       },
     );
   }
 
   Widget _barChart(BuildContext context) {
-    return  new FutureBuilder<List<Expenditure>>(
+    return new FutureBuilder<List<Expenditure>>(
         future: getExpenseList(),
         builder: (context, snapshot) {
           if (snapshot.hasError) print(snapshot.error);
@@ -209,9 +226,11 @@ class _ReportState extends State<Report> {
                             strokeWidthPx: 2.0),
                       ))
                 ]));
-          }
-          else{
-            return Center(child:Align(alignment:Alignment.center , child:Text("No data found.")));
+          } else {
+            return Center(
+                child: Align(
+                    alignment: Alignment.center,
+                    child: Text("No data found.")));
           }
           return Text("Error");
         });
@@ -221,7 +240,7 @@ class _ReportState extends State<Report> {
 
   double getWidth(BuildContext context, int itemCount) {
     int chartWidth = 0;
-    chartWidth = (itemCount * 65) + 80;
+    chartWidth = (itemCount * 45) + 80;
     return chartWidth.toDouble();
   }
 
@@ -242,14 +261,13 @@ class _ReportState extends State<Report> {
           ],
           rows: _categoryExpense
               .map(
-            // Loops through dataColumnText, each iteration assigning the value to element
-              (((element) =>
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text(element.itemName)),
-                      DataCell(Text(element.amount.toStringAsFixed(2))),
-                    ],
-                  ))))
+                  // Loops through dataColumnText, each iteration assigning the value to element
+                  (((element) => DataRow(
+                        cells: <DataCell>[
+                          DataCell(Text(element.itemName)),
+                          DataCell(Text(element.amount.toStringAsFixed(2))),
+                        ],
+                      ))))
               .toList());
     }
   }
@@ -262,6 +280,3 @@ class _ReportState extends State<Report> {
     });
   }
 }
-
-
-
