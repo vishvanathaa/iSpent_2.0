@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ispent/addExpense.dart';
 import 'package:ispent/home_presenter.dart';
 import 'package:ispent/database/model/expenditure.dart';
 import 'package:ispent/database/database_helper.dart';
@@ -13,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:ispent/report.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:ispent/utilities.dart';
+
 double _totalExpense = 0;
 double _budget = 0;
 int _mode = 0;
@@ -39,7 +39,6 @@ class ISpentContainer extends StatelessWidget {
         },
         home: ISpentHome());
   }
-
 }
 
 class ISpentHome extends StatefulWidget {
@@ -88,13 +87,24 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
     return DefaultTabController(
       length: choices.length,
       child: Scaffold(
+        drawer: Drawer(
+          // Add a ListView to the drawer. This ensures the user can scroll
+          // through the options in the drawer if there isn't enough vertical
+          // space to fit everything.
+          child: ListView(
+            children: [
+              _tile('CONTRIBUTORS', '', null),
+              _tile('Vishvanatha Acharya', 'Udupi', Icons.person),
+              _tile('Shubharathna', 'Udupi', Icons.person),
+              _tile('Naveena Bhandari', 'Shimoga', Icons.person),
+              _tile('Raghavendra N V', 'Shimoga', Icons.person),
+              _tile('Jayalakshmi', 'Chikkaamagaluru', Icons.person),
+            ],
+          ),
+        ),
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           centerTitle: false,
-          leading: Transform.translate(
-            offset: Offset(0, 0),
-            child: Icon(Icons.add_shopping_cart),
-          ),
           //titleSpacing: -5,
           elevation: 0.2,
           backgroundColor: Colors.indigo,
@@ -188,7 +198,9 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
 
 class ChoiceCard extends StatefulWidget {
   final Choice choice;
+
   const ChoiceCard({Key key, this.choice}) : super(key: key);
+
   @override
   _ChoiceCardState createState() => _ChoiceCardState();
 }
@@ -214,16 +226,7 @@ class _ChoiceCardState extends State<ChoiceCard> {
     } else if (choiceType == "REPORT") {
       return new Report(_monthNumber, _year, _mode);
     } else {
-      return new FutureBuilder<List<Expenditure>>(
-          future: getExpenseList(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) print(snapshot.error);
-            var data = snapshot.data;
-            if (snapshot.hasData) {
-              return new TransactionList(data);
-            }
-            return new Center(child: new CircularProgressIndicator());
-          });
+      return new TransactionList(_mode,_year,_monthNumber,"");
     }
   }
 }
@@ -374,7 +377,7 @@ Widget _expenseListView(BuildContext context) {
         if (snapshot.hasData) {
           _totalExpense = getTotalExpense(_expenditureList);
           return new Column(children: [
-            ExpenditureList(_expenditureList),
+            ExpenditureList(_expenditureList,_mode,_year,_monthNumber),
             //_separator(context),
             _headerExpenseView(context),
             _separator(context),
@@ -383,6 +386,18 @@ Widget _expenseListView(BuildContext context) {
         }
         return new Center(child: new CircularProgressIndicator());
       });
+}
+
+ListTile _tile(String title, String subtitle, IconData icon) {
+  return ListTile(
+    title: Text(title,
+       ),
+    subtitle: Text(subtitle),
+    leading: Icon(
+      icon,
+      color: Colors.blue[500],
+    ),
+  );
 }
 
 void main() {
