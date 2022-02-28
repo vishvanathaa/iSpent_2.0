@@ -136,7 +136,7 @@ class _ReportState extends State<Report> {
                     Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Text("Scroll to right for BAR CHART",
-                          style: TextStyle(fontStyle: FontStyle.italic,color: Colors.red,),
+                          style: TextStyle(fontStyle: FontStyle.italic,color: Colors.green,),
                         )),
                     Row(
                       mainAxisSize: MainAxisSize.min,
