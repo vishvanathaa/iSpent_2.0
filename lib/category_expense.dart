@@ -49,7 +49,8 @@ class _CategoryExpenseState extends State<CategoryExpense>
                   getExpenseList(widget.monthNumber, widget.year, widget.mode),
               builder: (context, snapshot) {
                 if (snapshot.hasError) print(snapshot.error);
-                List<Expenditure> _filteredExpenses = getFilteredExpense(snapshot.data,widget.category);
+                List<Expenditure> _filteredExpenses =
+                    getFilteredExpense(snapshot.data, widget.category);
                 if (snapshot.hasData) {
                   return new Container(
                       color: Colors.indigo[60],
@@ -194,10 +195,12 @@ class _CategoryExpenseState extends State<CategoryExpense>
     setState(() {});
   }
 }
-List<Expenditure> getFilteredExpense(List<Expenditure> expenseList,String categoryName)
-{
+
+List<Expenditure> getFilteredExpense(
+    List<Expenditure> expenseList, String categoryName) {
   return expenseList.where((i) => i.itemName == categoryName).toList();
 }
+
 Future<List<Expenditure>> getExpenseList(int monthNumber, int year, int mode) {
   return db.getExpenses(monthNumber, year, mode);
 }

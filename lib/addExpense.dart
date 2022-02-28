@@ -123,7 +123,7 @@ class _AddExpenseState extends State<AddExpenseScreen> {
                             DecimalTextInputFormatter(decimalRange: 2)
                           ],
                           keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
+                          TextInputType.numberWithOptions(decimal: true),
                           validator: (String arg) {
                             if (arg.length < 1)
                               return 'Enter Amount';
@@ -224,9 +224,9 @@ class DecimalTextInputFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue, // unused.
-    TextEditingValue newValue,
-  ) {
+      TextEditingValue oldValue, // unused.
+      TextEditingValue newValue,
+      ) {
     TextSelection newSelection = newValue.selection;
     String truncated = newValue.text;
 

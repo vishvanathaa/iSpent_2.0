@@ -36,6 +36,7 @@ class ISpentContainer extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           'first': (BuildContext context) => new ISpentHome(),
           '/second': (BuildContext context) => new ExpenseScreen(),
+          '/expense': (BuildContext context) => new ExpenseScreen(),
         },
         home: ISpentHome());
   }
@@ -98,7 +99,7 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
               _tile('Shubharathna', 'Udupi', Icons.person),
               _tile('Naveena Bhandari', 'Shimoga', Icons.person),
               _tile('Raghavendra N V', 'Shimoga', Icons.person),
-              _tile('Jayalakshmi', 'Chikkaamagaluru', Icons.person),
+              _tile('Jayalakshmi', 'Chikmagaluru', Icons.person),
             ],
           ),
         ),
@@ -378,7 +379,7 @@ Widget _expenseListView(BuildContext context) {
           _totalExpense = getTotalExpense(_expenditureList);
           return new Column(children: [
             ExpenditureList(_expenditureList,_mode,_year,_monthNumber),
-            //_separator(context),
+            _separator(context),
             _headerExpenseView(context),
             _separator(context),
             _balanceView(context)

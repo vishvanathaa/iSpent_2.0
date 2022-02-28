@@ -86,9 +86,9 @@ class _AppSettingsState extends State<AppSettings> {
                                 maxLength: 12,
                                 controller: amountController,
                                 decoration: new InputDecoration(
-                                  //labelText: "Budget",
+                                  labelText: "Budget",
 
-                                  hintText: 'Your Monthly budget',
+                                  hintText: 'Your budget',
                                   prefixIcon: const Icon(
                                     Icons.monetization_on,
                                     color: Colors.indigo,
