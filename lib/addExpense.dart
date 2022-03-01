@@ -170,6 +170,7 @@ class _AddExpenseState extends State<AddExpenseScreen> {
                       padding: EdgeInsets.only(top: 20),
                       child: FlatButton.icon(
                         color: Colors.indigo,
+                        shape: StadiumBorder(),
                         icon:
                         const Icon(Icons.save, color: Colors.white),
                         //`Icon` to display

@@ -87,7 +87,7 @@ class _ExpenseState extends State<ExpenseScreen> {
                           Icons.directions_bus, "Bus", "directions_bus"),
                       getCategory(
                           Icons.monetization_on, "Rent", "monetization_on"),
-                      addCategory(Icons.local_hospital, "Add Category",
+                      addCategory(Icons.local_hospital, "Add New",
                           "local_hospital"),
                     ],
                   ),
@@ -195,7 +195,9 @@ class _ExpenseState extends State<ExpenseScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.length > 0) {
-              return _ExpenseCategories(context);
+              return Padding(
+                  padding: EdgeInsets.only(top: 5,left:15,right:5),
+                  child:_ExpenseCategories(context));
             }
           }
           return Text("");
@@ -230,8 +232,8 @@ class _ExpenseState extends State<ExpenseScreen> {
                       new Card(
                         elevation: 2.0,
                         child: new Container(
-                          height: MediaQuery.of(context).size.width / 4,
-                          width: MediaQuery.of(context).size.width / 2,
+                          height: MediaQuery.of(context).size.width / 3.8,
+                          width: MediaQuery.of(context).size.width / 3,
                           alignment: Alignment.center,
                           padding: EdgeInsets.only(top: 10.0),
                           child: getCategory(Icons.ac_unit,

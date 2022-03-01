@@ -69,7 +69,7 @@ class _AddExpenseCategoryState extends State<AddExpenseCategoryScreen> {
                       Expanded(
                         child: new TextFormField(
                           controller: categoryController,
-                          maxLength: 30,
+                          maxLength: 25,
                           decoration: new InputDecoration(
                             labelText: "Enter expense category here.",
                             fillColor: Colors.indigo,
