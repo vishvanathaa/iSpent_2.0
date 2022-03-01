@@ -26,7 +26,7 @@ class _ExpenseState extends State<ExpenseScreen> {
         children: [
           _ExpenseCategoryList(context),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.65,
+            height: MediaQuery.of(context).size.height * 0.71,
             child: CustomScrollView(
               primary: false,
               slivers: <Widget>[
