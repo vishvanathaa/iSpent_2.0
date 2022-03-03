@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ispent/category_expense.dart';
-import 'package:ispent/transaction_list.dart';
 import 'database/model/expenditure.dart';
 import "dart:collection";
-
+import 'package:ispent/utilities.dart';
 class ExpenditureList extends StatelessWidget {
   final List<Expenditure> expenses;
   final int mode;
@@ -40,7 +39,8 @@ class ExpenditureList extends StatelessWidget {
                         padding: EdgeInsets.only(left: 0.0),
                         child: IconButton(
                             icon: new Icon(
-                              Icons.search,
+                              getIconName(
+                                  expenseList[index].icon),
                               color: Colors.greenAccent,
                             ),
                             onPressed: () {
@@ -95,18 +95,14 @@ class ExpenditureList extends StatelessWidget {
 
 List<Expenditure> getConsolidatedList(List<Expenditure> expenses) {
   var _categoryExpense = new List<Expenditure>();
-  List<String> categoryList = new List<String>();
   if (expenses != null) {
-    for (int i = 0; i < expenses.length; i++) {
-      categoryList.add(expenses[i].itemName);
-    }
-    List<String> distinctCategory =
-        LinkedHashSet<String>.from(categoryList).toList();
+    var seen = Set<String>();
+    List<Expenditure> distinctCategory = expenses.where((i) => seen.add(i.itemName)).toList();
     for (var j = 0; j < distinctCategory.length; j++) {
       double totalAmount =
-          getCategoryAmount(expenses, distinctCategory[j].toString());
+          getCategoryAmount(expenses, distinctCategory[j].itemName);
       _categoryExpense.add(new Expenditure(
-          totalAmount, distinctCategory[j].toString(), null, "", ""));
+          totalAmount, distinctCategory[j].itemName, null, distinctCategory[j].icon, ""));
     }
   }
   return _categoryExpense;

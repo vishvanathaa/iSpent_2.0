@@ -197,6 +197,9 @@ IconData getIconName(String iconName) {
     case "star_border":
       iconData = Icons.star_border;
       break;
+    case "ac_unit":
+      iconData = Icons.ac_unit;
+      break;
   }
   return iconData;
 }
