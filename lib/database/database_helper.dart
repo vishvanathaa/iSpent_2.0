@@ -69,21 +69,6 @@ class DatabaseHelper {
     return categories;
   }
 
-  Future<List<Expenditure>> getCategories1() async {
-    var dbClient = await db;
-    var query = "SELECT * FROM Expenditure";
-    List<Map> list = await dbClient.rawQuery(query);
-    List<Expenditure> categories = [];
-    for (int i = 0; i < list.length; i++) {
-      var user = new Expenditure(list[i]["amount"], list[i]["itemname"],
-          list[i]["entrydate"], list[i]["icon"], list[i]["note"]);
-      user.setExpenditureId(list[i]["id"]);
-      categories.add(user);
-    }
-    print(categories.length);
-    return categories;
-  }
-
   Future<List<Expenditure>> getExpenses(int month, int year, int mode) async {
     var dbClient = await db;
     var query;
