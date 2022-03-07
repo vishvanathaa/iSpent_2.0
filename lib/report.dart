@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "database/model/expenditure.dart";
-import 'package:flutter/foundation.dart';
 import "dart:collection";
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:ispent/database/database_helper.dart';
@@ -9,9 +7,9 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:ispent/utilities.dart';
 
 var db = new DatabaseHelper();
-List<charts.Series> seriesList = new List<charts.Series>();
+List<charts.Series> seriesList = [];
 final bool animate = false;
-List<Expenditure> _categoryExpense = new List<Expenditure>();
+List<Expenditure> _categoryExpense = [];
 var test;
 Map<String, double> dataMap = Map();
 
@@ -58,8 +56,8 @@ class _ReportState extends State<Report> {
   }
 
   void prepareChartData(List<Expenditure> expenses) {
-    _categoryExpense = new List<Expenditure>();
-    List<String> categoryList = new List<String>();
+    _categoryExpense = [];//new List<Expenditure>();
+    List<String> categoryList = [];//new List<String>();
     if (expenses != null) {
       for (int i = 0; i < expenses.length; i++) {
         categoryList.add(expenses[i].itemName);
@@ -96,8 +94,8 @@ class _ReportState extends State<Report> {
 
   Map<String, double> getPieChartData(List<Expenditure> expenses) {
     dataMap = Map();
-    _categoryExpense = new List<Expenditure>();
-    List<String> categoryList = new List<String>();
+    _categoryExpense = [];//new List<Expenditure>();
+    List<String> categoryList = [];//new List<String>();
     if (expenses != null) {
       for (int i = 0; i < expenses.length; i++) {
         categoryList.add(expenses[i].itemName);
@@ -163,21 +161,23 @@ class _ReportState extends State<Report> {
                                         chartRadius:
                                             MediaQuery.of(context).size.width /
                                                 1.5,
-                                        showChartValuesInPercentage: true,
-                                        showChartValues: true,
-                                        showChartValuesOutside: true,
-                                        chartValueBackgroundColor:
-                                            Colors.grey[200],
+                                        chartValuesOptions: ChartValuesOptions(
+                                          showChartValueBackground: true,
+                                          showChartValues: true,
+                                          showChartValuesInPercentage: true,
+                                          showChartValuesOutside: true,
+                                          decimalPlaces: 0,
+                                        ),
+
                                         colorList: colorList,
-                                        showLegends: true,
-                                        legendPosition: LegendPosition.right,
-                                        decimalPlaces: 1,
-                                        showChartValueLabel: true,
-                                        initialAngle: 0,
-                                        chartValueStyle:
-                                            defaultChartValueStyle.copyWith(
-                                          color: Colors.blueGrey[900]
-                                              .withOpacity(0.9),
+                                        legendOptions: LegendOptions(
+                                          showLegendsInRow: false,
+                                          legendPosition: LegendPosition.right,
+                                          showLegends: true,
+                                          //legendShape: _BoxShape.circle,
+                                          legendTextStyle: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                          ),
                                         ),
                                         chartType: ChartType.disc,
                                       );

@@ -37,9 +37,8 @@ class _AddExpenseState extends State<AddExpenseScreen> {
       resizeToAvoidBottomInset: false,
       //resizeToAvoidBottomPadding: false,
       body: Form(
+          autovalidateMode: AutovalidateMode.always,
           key: _formKey,
-
-          autovalidate: _autoValidate,
           child: Column(
             children: [
               Container(
@@ -168,9 +167,15 @@ class _AddExpenseState extends State<AddExpenseScreen> {
               Center(
                   child: Padding(
                       padding: EdgeInsets.only(top: 20),
-                      child: FlatButton.icon(
-                        color: Colors.indigo,
-                        shape: StadiumBorder(),
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                          textStyle: TextStyle(color: Colors.white),
+                          backgroundColor: Colors.indigo,
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          shape:RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24.0),
+                          ),
+                        ),
                         icon:
                         const Icon(Icons.save, color: Colors.white),
                         //`Icon` to display

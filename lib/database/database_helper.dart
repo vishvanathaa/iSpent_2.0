@@ -47,12 +47,19 @@ class DatabaseHelper {
     int res = await dbClient.insert("Category", category.toMap());
     return res;
   }
+  Future<int> getCategoryCount() async {
+    //database connection
+    var dbClient = await db;
+    var x = await dbClient.rawQuery('SELECT COUNT(1) Category');
+        int count = Sqflite.firstIntValue(x);
+    return count;
+  }
 
   Future<List<Category>> getCategories() async {
     var dbClient = await db;
     var query = "SELECT * FROM Category ORDER BY id DESC";
     List<Map> list = await dbClient.rawQuery(query);
-    List<Category> categories = new List();
+    List<Category> categories = [];
     for (int i = 0; i < list.length; i++) {
       var category = new Category(list[i]["categoryname"]);
       category.setCategoryId(list[i]["id"]);
@@ -66,7 +73,7 @@ class DatabaseHelper {
     var dbClient = await db;
     var query = "SELECT * FROM Expenditure";
     List<Map> list = await dbClient.rawQuery(query);
-    List<Expenditure> categories = new List();
+    List<Expenditure> categories = [];
     for (int i = 0; i < list.length; i++) {
       var user = new Expenditure(list[i]["amount"], list[i]["itemname"],
           list[i]["entrydate"], list[i]["icon"], list[i]["note"]);

@@ -98,12 +98,12 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
               _tile('Vishvanatha Acharya', 'Udupi', Icons.person),
               _tile('Shubharathna', 'Udupi', Icons.person),
               _tile('Naveena Bhandari', 'Shimoga', Icons.person),
-              _tile('Raghavendra N V', 'Shimoga', Icons.person),
               _tile('Jayalakshmi', 'Chikmagaluru', Icons.person),
+              _tile('Madhuri Pai', 'Mangalore', Icons.person),
             ],
           ),
         ),
-        resizeToAvoidBottomPadding: false,
+        //resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           centerTitle: false,
           //titleSpacing: -5,
@@ -120,7 +120,7 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
                     setState(() {
                       if (_mode == 0) {
                         var newDate =
-                            Jiffy(_currentDateTime).subtract(months: 1);
+                            Jiffy(_currentDateTime).subtract(months: 1).dateTime;
                         _monthNumber = newDate.month;
                         _currentDateTime = newDate;
                         _year = newDate.year;
@@ -142,7 +142,7 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
                 onPressed: () {
                   setState(() {
                     if (_mode == 0) {
-                      var newDate = Jiffy(_currentDateTime).add(months: 1);
+                      var newDate = Jiffy(_currentDateTime).add(months: 1).dateTime;
                       _monthNumber = newDate.month;
                       _currentDateTime = newDate;
                       _year = newDate.year;

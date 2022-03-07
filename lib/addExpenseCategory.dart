@@ -4,7 +4,6 @@ import 'package:ispent/screenarguments.dart';
 import 'package:ispent/database/database_helper.dart';
 import 'dart:async';
 
-
 class AddExpenseCategoryScreen extends StatefulWidget {
   final ScreenArguments args;
 
@@ -19,7 +18,8 @@ class _AddExpenseCategoryState extends State<AddExpenseCategoryScreen> {
 
   final _formKey = GlobalKey<FormState>();
   bool isPressed = false;
-  bool _autoValidate = false;
+
+  //bool _autoValidate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class _AddExpenseCategoryState extends State<AddExpenseCategoryScreen> {
       //resizeToAvoidBottomPadding: false,
       body: Form(
           key: _formKey,
-          autovalidate: _autoValidate,
+          autovalidateMode: AutovalidateMode.always,
           child: Column(
             children: [
               Container(
@@ -44,6 +44,7 @@ class _AddExpenseCategoryState extends State<AddExpenseCategoryScreen> {
                       color: Colors.indigo,
                       size: 35,
                     ),
+                    onPressed: () {},
                     //tooltip: 'Second screen',
                     color: Colors.indigo,
                   ),
@@ -76,7 +77,8 @@ class _AddExpenseCategoryState extends State<AddExpenseCategoryScreen> {
                             border: new OutlineInputBorder(
                                 borderSide: new BorderSide(color: Colors.teal)),
                             //hintText: 'Tell us about yourself',
-                            helperText: 'Keep it short so it is fit into screen.',
+                            helperText:
+                                'Keep it short so it is fit into screen.',
                             prefixIcon: const Icon(
                               Icons.edit,
                               color: Colors.indigo,
@@ -98,9 +100,15 @@ class _AddExpenseCategoryState extends State<AddExpenseCategoryScreen> {
               Center(
                   child: Padding(
                       padding: EdgeInsets.only(top: 20),
-                      child: FlatButton.icon(
-                        color: Colors.indigo,
-                        shape: StadiumBorder(),
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                          textStyle: TextStyle(color: Colors.white),
+                          backgroundColor: Colors.indigo,
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          shape:RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24.0),
+                          ),
+                        ),
                         icon: const Icon(Icons.save, color: Colors.white),
                         //`Icon` to display
                         label: Text(
@@ -117,7 +125,7 @@ class _AddExpenseCategoryState extends State<AddExpenseCategoryScreen> {
                           } else {
                             //    If all data are not valid then start auto validation.
                             setState(() {
-                              _autoValidate = true;
+                              //_autoValidate = true;
                             });
                           }
                         },
@@ -130,11 +138,8 @@ class _AddExpenseCategoryState extends State<AddExpenseCategoryScreen> {
   Future addRecord() async {
     var db = new DatabaseHelper();
     var category = new Category(
-        categoryController.text,
-        );
-      await db.addCategory(category);
+      categoryController.text,
+    );
+    await db.addCategory(category);
   }
-
 }
-
-

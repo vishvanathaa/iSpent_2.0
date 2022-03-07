@@ -48,6 +48,7 @@ class _TransactionListExpenseState extends State<TransactionList>
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     color: Colors.indigo[50],
                     child: Column(children: [
+                      Text(snapshot.data.length.toString() + " item(s) found"),
                       ConstrainedBox(
                           constraints: new BoxConstraints(
                             //minHeight: 300.0,

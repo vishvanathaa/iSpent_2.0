@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ispent/category_expense.dart';
 import 'database/model/expenditure.dart';
-import "dart:collection";
 import 'package:ispent/utilities.dart';
 
 class ExpenditureList extends StatelessWidget {
@@ -37,38 +36,36 @@ class ExpenditureList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     new Padding(
-                        padding: EdgeInsets.only(left: 0.0),
-                        child: IconButton(
-                            icon: new Icon(
-                              getIconName(expenseList[index].icon),
-                              color: Colors.greenAccent,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CategoryExpense(
-                                        mode,
-                                        year,
-                                        monthNumber,
-                                        expenseList[index].itemName)),
-                              );
-                            })),
+                        padding: EdgeInsets.only(left: 2.0, right: 0.0),
+                        child:  IconButton(
+                                icon: new Icon(
+                                  getIconName(expenseList[index].icon),
+                                  color: Colors.greenAccent,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CategoryExpense(
+                                            mode,
+                                            year,
+                                            monthNumber,
+                                            expenseList[index].itemName)),
+                                  );
+                                })),
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(2.0),
-                        child: Badge(
-                            badgeContent: Text('3'),
-                            child: Text(
-                              //data[index].itemName,
-                              expenseList[index].itemName,
-                              style: new TextStyle(
-                                // fontFamily: "Quicksand",
-                                fontSize: 16.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            )),
+                        child: Text(
+                          //data[index].itemName,
+                          expenseList[index].itemName +" (" + expenseList[index].note + ")",
+                          style: new TextStyle(
+                            // fontFamily: "Quicksand",
+                            fontSize: 16.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
                       ),
                     ),
                     Align(
@@ -99,7 +96,7 @@ class ExpenditureList extends StatelessWidget {
 }
 
 List<Expenditure> getConsolidatedList(List<Expenditure> expenses) {
-  var _categoryExpense = new List<Expenditure>();
+  List<Expenditure> _categoryExpense = []; //new List<Expenditure>();
   if (expenses != null) {
     var seen = Set<String>();
     List<Expenditure> distinctCategory =
@@ -107,8 +104,14 @@ List<Expenditure> getConsolidatedList(List<Expenditure> expenses) {
     for (var j = 0; j < distinctCategory.length; j++) {
       double totalAmount =
           getCategoryAmount(expenses, distinctCategory[j].itemName);
-      _categoryExpense.add(new Expenditure(totalAmount,
-          distinctCategory[j].itemName, null, distinctCategory[j].icon, ""));
+      int categoryCount =
+          getCategoryCount(expenses, distinctCategory[j].itemName);
+      _categoryExpense.add(new Expenditure(
+          totalAmount,
+          distinctCategory[j].itemName,
+          null,
+          distinctCategory[j].icon,
+          categoryCount.toString()));
     }
   }
   return _categoryExpense;
@@ -122,4 +125,14 @@ double getCategoryAmount(List<Expenditure> source, String categoryName) {
     }
   }
   return totalAmount;
+}
+
+int getCategoryCount(List<Expenditure> source, String categoryName) {
+  int totalCount = 0;
+  for (int i = 0; i < source.length; i++) {
+    if (source[i].itemName == categoryName) {
+      totalCount = totalCount + 1;
+    }
+  }
+  return totalCount;
 }

@@ -38,10 +38,10 @@ class _DeleteExpenseState extends State<DeleteExpenseScreen> {
           title: Text("Update Expense"),
           backgroundColor: Colors.indigo,
         ),
-        resizeToAvoidBottomPadding: false,
+        //resizeToAvoidBottomPadding: false,
         body: Form(
             key: _formKey,
-            autovalidate: _autoValidate,
+            autovalidateMode: AutovalidateMode.always,
             child: Column(
               children: [
                 Container(

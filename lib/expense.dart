@@ -11,9 +11,6 @@ class ExpenseScreen extends StatefulWidget {
 }
 
 class _ExpenseState extends State<ExpenseScreen> {
-  bool isPressed = false;
-  Color _iconColor = Colors.grey;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,10 +18,10 @@ class _ExpenseState extends State<ExpenseScreen> {
         title: Text("Expense Category"),
         backgroundColor: Colors.indigo,
       ),
-      resizeToAvoidBottomPadding: false,
+      //resizeToAvoidBottomPadding: false,
       body: Column(
         children: [
-          _ExpenseCategoryList(context),
+          expenseCategoryList(context),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.71,
             child: CustomScrollView(
@@ -47,8 +44,6 @@ class _ExpenseState extends State<ExpenseScreen> {
                       getCategory(
                           Icons.local_dining, "Eatables", "local_dining"),
                       getCategory(Icons.local_drink, "Drinks", "local_drink"),
-                      getCategory(
-                          Icons.local_cafe, "Soft Drinks", "local_cafe"),
                       getCategory(Icons.theaters, "Fun", "theaters"),
                       getCategory(Icons.loyalty, "Bills", "loyalty"),
                       getCategory(Icons.spa, "Fashion", "spa"),
@@ -87,8 +82,9 @@ class _ExpenseState extends State<ExpenseScreen> {
                           Icons.directions_bus, "Bus", "directions_bus"),
                       getCategory(
                           Icons.monetization_on, "Rent", "monetization_on"),
-                      addCategory(Icons.local_hospital, "Add New",
-                          "local_hospital"),
+                      getCategory(Icons.star_border, "Others", "star_border"),
+                      addCategory(
+                          Icons.local_hospital, "Add New", "local_hospital"),
                     ],
                   ),
                 ),
@@ -118,9 +114,6 @@ class _ExpenseState extends State<ExpenseScreen> {
               ),
               //tooltip: 'Second splashColor: Colors.redscreen',
               onPressed: () {
-                setState(() {
-                  _iconColor = Colors.indigo;
-                });
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -159,9 +152,6 @@ class _ExpenseState extends State<ExpenseScreen> {
               ),
               //tooltip: 'Second splashColor: Colors.redscreen',
               onPressed: () {
-                setState(() {
-                  _iconColor = Colors.indigo;
-                });
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -189,22 +179,22 @@ class _ExpenseState extends State<ExpenseScreen> {
     return db.getCategories();
   }
 
-  Widget _ExpenseCategoryList(BuildContext context) {
+  Widget expenseCategoryList(BuildContext context) {
     return FutureBuilder<List<Category>>(
         future: getCategoryList(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.length > 0) {
               return Padding(
-                  padding: EdgeInsets.only(top: 5,left:15,right:5),
-                  child:_ExpenseCategories(context));
+                  padding: EdgeInsets.only(top: 5, left: 15, right: 5),
+                  child: expenseCategories(context));
             }
           }
           return Text("");
         });
   }
 
-  Widget _ExpenseCategories(BuildContext context) {
+  Widget expenseCategories(BuildContext context) {
     return new ListView(
         shrinkWrap: true,
         physics: ScrollPhysics(),
@@ -244,7 +234,6 @@ class _ExpenseState extends State<ExpenseScreen> {
                   );
                 });
           }
-          return Center(child: Text(snapshot.data.length.toString()));
         });
   }
 

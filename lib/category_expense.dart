@@ -42,7 +42,7 @@ class _CategoryExpenseState extends State<CategoryExpense>
           title: Text(widget.category),
           backgroundColor: Colors.indigo,
         ),
-        resizeToAvoidBottomPadding: false,
+        //resizeToAvoidBottomPadding: false,
         body: Column(children: [
           new FutureBuilder<List<Expenditure>>(
               future:
@@ -59,6 +59,7 @@ class _CategoryExpenseState extends State<CategoryExpense>
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           color: Colors.indigo[50],
                           child: Column(children: [
+                            Text(_filteredExpenses.length.toString() + " item(s) found"),
                             ConstrainedBox(
                                 constraints: new BoxConstraints(
                                   //minHeight: 300.0,

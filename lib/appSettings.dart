@@ -39,10 +39,10 @@ class _AppSettingsState extends State<AppSettings> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomPadding: false,
+        //resizeToAvoidBottomPadding: false,
         body: Form(
             key: _formKey,
-            autovalidate: _autoValidate,
+            autovalidateMode: AutovalidateMode.always,
             child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
@@ -120,8 +120,15 @@ class _AppSettingsState extends State<AppSettings> {
                     Center(
                         child: Padding(
                             padding: EdgeInsets.only(top: 20),
-                            child: FlatButton.icon(
-                              color: Colors.indigo,
+                            child: TextButton.icon(
+                              style: TextButton.styleFrom(
+                                textStyle: TextStyle(color: Colors.white),
+                                backgroundColor: Colors.indigo,
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                shape:RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24.0),
+                                ),
+                              ),
 
                               icon: const Icon(Icons.save, color: Colors.white),
                               //`Icon` to display

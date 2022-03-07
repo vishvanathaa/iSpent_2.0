@@ -33,7 +33,6 @@ List<Color> colorList = [
   Colors.deepOrangeAccent
 ];
 
-
 String getMonthName(int mon) {
   String monthName;
   switch (mon) {
@@ -79,8 +78,10 @@ String getMonthName(int mon) {
   }
   return monthName;
 }
+
 class Choice {
   const Choice({this.title, this.icon});
+
   final String title;
   final IconData icon;
 }
@@ -199,6 +200,12 @@ IconData getIconName(String iconName) {
       break;
     case "ac_unit":
       iconData = Icons.ac_unit;
+      break;
+    case "shopping_basket":
+      iconData = Icons.shopping_basket;
+      break;
+    case "local_cafe":
+      iconData = Icons.local_cafe;
       break;
   }
   return iconData;
