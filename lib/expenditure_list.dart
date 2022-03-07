@@ -3,6 +3,7 @@ import 'package:ispent/category_expense.dart';
 import 'database/model/expenditure.dart';
 import "dart:collection";
 import 'package:ispent/utilities.dart';
+
 class ExpenditureList extends StatelessWidget {
   final List<Expenditure> expenses;
   final int mode;
@@ -39,8 +40,7 @@ class ExpenditureList extends StatelessWidget {
                         padding: EdgeInsets.only(left: 0.0),
                         child: IconButton(
                             icon: new Icon(
-                              getIconName(
-                                  expenseList[index].icon),
+                              getIconName(expenseList[index].icon),
                               color: Colors.greenAccent,
                             ),
                             onPressed: () {
@@ -48,22 +48,27 @@ class ExpenditureList extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => CategoryExpense(
-                                        mode, year, monthNumber, expenseList[index].itemName)),
+                                        mode,
+                                        year,
+                                        monthNumber,
+                                        expenseList[index].itemName)),
                               );
                             })),
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(2.0),
-                        child: Text(
-                          //data[index].itemName,
-                          expenseList[index].itemName,
-                          style: new TextStyle(
-                            // fontFamily: "Quicksand",
-                            fontSize: 16.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
+                        child: Badge(
+                            badgeContent: Text('3'),
+                            child: Text(
+                              //data[index].itemName,
+                              expenseList[index].itemName,
+                              style: new TextStyle(
+                                // fontFamily: "Quicksand",
+                                fontSize: 16.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            )),
                       ),
                     ),
                     Align(
@@ -97,12 +102,13 @@ List<Expenditure> getConsolidatedList(List<Expenditure> expenses) {
   var _categoryExpense = new List<Expenditure>();
   if (expenses != null) {
     var seen = Set<String>();
-    List<Expenditure> distinctCategory = expenses.where((i) => seen.add(i.itemName)).toList();
+    List<Expenditure> distinctCategory =
+        expenses.where((i) => seen.add(i.itemName)).toList();
     for (var j = 0; j < distinctCategory.length; j++) {
       double totalAmount =
           getCategoryAmount(expenses, distinctCategory[j].itemName);
-      _categoryExpense.add(new Expenditure(
-          totalAmount, distinctCategory[j].itemName, null, distinctCategory[j].icon, ""));
+      _categoryExpense.add(new Expenditure(totalAmount,
+          distinctCategory[j].itemName, null, distinctCategory[j].icon, ""));
     }
   }
   return _categoryExpense;
