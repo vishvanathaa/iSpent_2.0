@@ -32,6 +32,8 @@ class DatabaseHelper {
     // When creating the db, create the table
     await db.execute(
         "CREATE TABLE Expenditure(id INTEGER PRIMARY KEY, amount REAL, itemname TEXT, entrydate TEXT,icon TEXT,note TEXT)");
+
+    await db.execute("ALTER TABLE Expenditure ADD COLUMN categorytype INTEGER DEFAULT 0");
     await db.execute(
         "CREATE TABLE Category(id INTEGER PRIMARY KEY, categoryname TEXT)");
   }
@@ -39,6 +41,7 @@ class DatabaseHelper {
   Future<int> saveUser(Expenditure expenditure) async {
     var dbClient = await db;
     int res = await dbClient.insert("Expenditure", expenditure.toMap());
+
     return res;
   }
 
@@ -69,7 +72,7 @@ class DatabaseHelper {
     return categories;
   }
 
-  Future<List<Expenditure>> getExpenses(int month, int year, int mode) async {
+  Future<List<Expenditure>> getExpenses(int month, int year, int mode,int type) async {
     var dbClient = await db;
     var query;
     if (mode == 0) {
@@ -77,18 +80,18 @@ class DatabaseHelper {
           month.toString() +
           " AND  CAST(strftime('%Y', strftime('%s',date(entrydate)), 'unixepoch') AS INTEGER)  = " +
           year.toString() +
-          "";
+          " AND categorytype = "+type.toString()+"";
     } else {
       query =
           "SELECT * FROM Expenditure WHERE CAST(strftime('%Y', strftime('%s',date(entrydate)), 'unixepoch') AS INTEGER)  = " +
               year.toString() +
-              "";
+              " AND categorytype = "+type.toString()+"";
     }
     List<Map> list = await dbClient.rawQuery(query);
-    List<Expenditure> expenses = new List();
+    List<Expenditure> expenses = [];
     for (int i = 0; i < list.length; i++) {
       var user = new Expenditure(list[i]["amount"], list[i]["itemname"],
-          list[i]["entrydate"], list[i]["icon"], list[i]["note"]);
+          list[i]["entrydate"], list[i]["icon"], list[i]["note"],list[i]["categorytype"]);
       user.setExpenditureId(list[i]["id"]);
       expenses.add(user);
     }

@@ -5,7 +5,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:ispent/database/database_helper.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:ispent/utilities.dart';
-
+import "package:collection/collection.dart";
 var db = new DatabaseHelper();
 List<charts.Series> seriesList = [];
 final bool animate = false;
@@ -18,12 +18,11 @@ class Report extends StatefulWidget {
   final int year;
   final int mode;
 
-  Report(
-    this.month,
-    this.year,
-    this.mode, {
-    Key key,
-  }) : super(key: key);
+  Report(this.month,
+      this.year,
+      this.mode, {
+        Key key,
+      }) : super(key: key);
 
   @override
   _ReportState createState() => _ReportState();
@@ -33,6 +32,7 @@ class _ReportState extends State<Report> {
   bool toggle = false;
   Map<String, double> dataMap = new Map();
   int chartType = 0;
+  List<charts.Series<dynamic, DateTime>> seriesList;
 
   double getCategoryAmount(List<Expenditure> source, String categoryName) {
     double totalAmount = 0;
@@ -45,7 +45,11 @@ class _ReportState extends State<Report> {
   }
 
   Future<List<Expenditure>> getExpenseList() {
-    return db.getExpenses(widget.month, widget.year, widget.mode);
+    return db.getExpenses(widget.month, widget.year, widget.mode,0);
+  }
+
+  Future<List<Expenditure>> getYearExpense() {
+    return db.getExpenses(widget.month, widget.year, 1,0);
   }
 
   @override
@@ -56,27 +60,88 @@ class _ReportState extends State<Report> {
   }
 
   void prepareChartData(List<Expenditure> expenses) {
-    _categoryExpense = [];//new List<Expenditure>();
-    List<String> categoryList = [];//new List<String>();
+    _categoryExpense = []; //new List<Expenditure>();
+    List<String> categoryList = []; //new List<String>();
     if (expenses != null) {
       for (int i = 0; i < expenses.length; i++) {
         categoryList.add(expenses[i].itemName);
       }
       List<String> distinctCategory =
-          LinkedHashSet<String>.from(categoryList).toList();
+      LinkedHashSet<String>.from(categoryList).toList();
       for (var j = 0; j < distinctCategory.length; j++) {
         double totalAmount =
-            getCategoryAmount(expenses, distinctCategory[j].toString());
+        getCategoryAmount(expenses, distinctCategory[j].toString());
         _categoryExpense.add(new Expenditure(
-            totalAmount, distinctCategory[j].toString(), null, "", ""));
+            totalAmount, distinctCategory[j].toString(), null, "", "",0));
         dataMap.putIfAbsent(distinctCategory[j].toString(), () => totalAmount);
       }
     }
   }
 
+  void prepareBarChartData(List<Expenditure> expenses) {
+    _categoryExpense = [];
+    var groupByMonth =
+    expenses.groupListsBy((obj) => obj.entryDate.substring(5, 7));
+    groupByMonth.forEach((month, list) {
+      print('$month:');
+      double monthTotalExpense = 0.0;
+      list.forEach((listItem) {
+        // List item
+        monthTotalExpense = monthTotalExpense + listItem.amount;
+        //    print('${listItem.entryDate}, ${listItem.itemName}');
+      });
+      _categoryExpense.add(
+          new Expenditure(
+              monthTotalExpense, getMonthName(month), null, "", "",0));
+    });
+  }
+
+  String getMonthName(String monNumber) {
+    String returnValue = "";
+    switch (monNumber) {
+      case "01":
+        returnValue = "Jan";
+        break;
+      case "02":
+        returnValue = "Feb";
+        break;
+      case "03":
+        returnValue = "Mar";
+        break;
+      case "04":
+        returnValue = "Apr";
+        break;
+      case "05":
+        returnValue = "May";
+        break;
+      case "06":
+        returnValue = "Jun";
+        break;
+      case "07":
+        returnValue = "Jul";
+        break;
+      case "08":
+        returnValue = "Aug";
+        break;
+      case "09":
+        returnValue = "Sep";
+        break;
+      case "10":
+        returnValue = "Oct";
+        break;
+      case "11":
+        returnValue = "Nov";
+        break;
+      case "12":
+        returnValue = "Dec";
+        break;
+    }
+    return returnValue;
+  }
+
   List<charts.Series<Expenditure, String>> getBarChartSeries(
       List<Expenditure> expenses) {
-    prepareChartData(expenses);
+    prepareBarChartData(expenses);
     return _createBarChartData();
   }
 
@@ -94,19 +159,19 @@ class _ReportState extends State<Report> {
 
   Map<String, double> getPieChartData(List<Expenditure> expenses) {
     dataMap = Map();
-    _categoryExpense = [];//new List<Expenditure>();
-    List<String> categoryList = [];//new List<String>();
+    _categoryExpense = []; //new List<Expenditure>();
+    List<String> categoryList = []; //new List<String>();
     if (expenses != null) {
       for (int i = 0; i < expenses.length; i++) {
         categoryList.add(expenses[i].itemName);
       }
       List<String> distinctCategory =
-          LinkedHashSet<String>.from(categoryList).toList();
+      LinkedHashSet<String>.from(categoryList).toList();
       for (var j = 0; j < distinctCategory.length; j++) {
         double totalAmount =
-            getCategoryAmount(expenses, distinctCategory[j].toString());
+        getCategoryAmount(expenses, distinctCategory[j].toString());
         _categoryExpense.add(new Expenditure(
-            totalAmount, distinctCategory[j].toString(), null, "", ""));
+            totalAmount, distinctCategory[j].toString(), null, "", "",0));
         dataMap.putIfAbsent(distinctCategory[j].toString(), () => totalAmount);
       }
     }
@@ -133,15 +198,19 @@ class _ReportState extends State<Report> {
                   children: [
                     Padding(
                         padding: EdgeInsets.all(16.0),
-                        child: Text("Scroll to right for BAR CHART",
-                          style: TextStyle(fontStyle: FontStyle.italic,color: Colors.green,),
+                        child: Text(
+                          "Scroll to right to see expense by month",
+                          style: TextStyle(
+                            fontStyle: FontStyle.normal,
+                            color: Colors.blueAccent,
+                          ),
                         )),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Container(
-                            // Another fixed-height child.
+                          // Another fixed-height child.
                             padding: EdgeInsets.only(left: 20, bottom: 40),
                             alignment: Alignment.topLeft,
                             child: new FutureBuilder<List<Expenditure>>(
@@ -156,11 +225,14 @@ class _ReportState extends State<Report> {
                                       return new PieChart(
                                         dataMap: dataSeries,
                                         animationDuration:
-                                            Duration(milliseconds: 800),
+                                        Duration(milliseconds: 800),
                                         chartLegendSpacing: 32.0,
                                         chartRadius:
-                                            MediaQuery.of(context).size.width /
-                                                1.5,
+                                        MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width /
+                                            1.5,
                                         chartValuesOptions: ChartValuesOptions(
                                           showChartValueBackground: true,
                                           showChartValues: true,
@@ -168,7 +240,6 @@ class _ReportState extends State<Report> {
                                           showChartValuesOutside: true,
                                           decimalPlaces: 0,
                                         ),
-
                                         colorList: colorList,
                                         legendOptions: LegendOptions(
                                           showLegendsInRow: false,
@@ -195,6 +266,7 @@ class _ReportState extends State<Report> {
                                   }
                                 })),
                         Container(child: _barChart(context)),
+                        // Container(child: new SelectionCallbackExample(seriesList)),
                       ],
                     )
                   ])),
@@ -205,10 +277,11 @@ class _ReportState extends State<Report> {
 
   Widget _barChart(BuildContext context) {
     return new FutureBuilder<List<Expenditure>>(
-        future: getExpenseList(),
+        future: getYearExpense(),
         builder: (context, snapshot) {
           if (snapshot.hasError) print(snapshot.error);
           var data = snapshot.data;
+          var barChartData = getBarChartSeries(data);
           if (snapshot.hasData) {
             return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -216,11 +289,25 @@ class _ReportState extends State<Report> {
                   Container(
                       padding: EdgeInsets.only(left: 10),
                       //color: Colors.green, // Yellow
-                      height: MediaQuery.of(context).size.height * 0.55,
-                      width: getWidth(context, data.length),
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.55,
+                      width: getWidth(),
                       child: charts.BarChart(
-                        getBarChartSeries(data),
+                        barChartData,
+                        behaviors: [
+                          new charts.ChartTitle('Expense By Month',
+                              behaviorPosition: charts.BehaviorPosition.top,
+                              titleOutsideJustification:
+                              charts.OutsideJustification.middleDrawArea),
+
+                        ],
                         animate: animate,
+                        domainAxis: charts.OrdinalAxisSpec(
+                          renderSpec:
+                          charts.SmallTickRendererSpec(labelRotation: 0),
+                        ),
                         defaultRenderer: new charts.BarRendererConfig(
                             groupingType: charts.BarGroupingType.stacked,
                             strokeWidthPx: 2.0),
@@ -232,51 +319,16 @@ class _ReportState extends State<Report> {
                     alignment: Alignment.center,
                     child: Text("No data found.")));
           }
-          return Text("Error");
         });
 
     /// Sample ordinal data type.
   }
 
-  double getWidth(BuildContext context, int itemCount) {
+  double getWidth() {
     int chartWidth = 0;
-    chartWidth = (itemCount * 45) + 80;
+    chartWidth = (_categoryExpense.length * 35 + 80);
     return chartWidth.toDouble();
   }
-
-  Widget _chart(BuildContext context) {
-    if (chartType == 0) {
-      return _pieChart(context);
-    } else if (chartType == 1) {
-      return _barChart(context);
-    } else {
-      return DataTable(
-          columns: [
-            DataColumn(
-                label: Text('CATEGORY',
-                    style: TextStyle(fontWeight: FontWeight.bold))),
-            DataColumn(
-                label: Text('TOTAL AMOUNT',
-                    style: TextStyle(fontWeight: FontWeight.bold))),
-          ],
-          rows: _categoryExpense
-              .map(
-                  // Loops through dataColumnText, each iteration assigning the value to element
-                  (((element) => DataRow(
-                        cells: <DataCell>[
-                          DataCell(Text(element.itemName)),
-                          DataCell(Text(element.amount.toStringAsFixed(2))),
-                        ],
-                      ))))
-              .toList());
-    }
-  }
-
-  /// Sample ordinal data type.
-
-  void _handleRadioValueChange(int value) {
-    setState(() {
-      chartType = value;
-    });
-  }
 }
+
+

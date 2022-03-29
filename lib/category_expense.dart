@@ -14,12 +14,12 @@ class CategoryExpense extends StatefulWidget {
   final int year;
   final int monthNumber;
   final String category;
-
+  final int type;
   CategoryExpense(
     this.mode,
     this.year,
     this.monthNumber,
-    this.category, {
+    this.category,this.type, {
     Key key,
   }) : super(key: key);
 
@@ -46,7 +46,7 @@ class _CategoryExpenseState extends State<CategoryExpense>
         body: Column(children: [
           new FutureBuilder<List<Expenditure>>(
               future:
-                  getExpenseList(widget.monthNumber, widget.year, widget.mode),
+                  getExpenseList(widget.monthNumber, widget.year, widget.mode,widget.type),
               builder: (context, snapshot) {
                 if (snapshot.hasError) print(snapshot.error);
                 List<Expenditure> _filteredExpenses =
@@ -168,7 +168,7 @@ class _CategoryExpenseState extends State<CategoryExpense>
                                                                         .id,
                                                                     _filteredExpenses[
                                                                             index]
-                                                                        .amount))),
+                                                                        .amount,0))),
                                                       );
                                                     },
                                                   ),
@@ -202,6 +202,6 @@ List<Expenditure> getFilteredExpense(
   return expenseList.where((i) => i.itemName == categoryName).toList();
 }
 
-Future<List<Expenditure>> getExpenseList(int monthNumber, int year, int mode) {
-  return db.getExpenses(monthNumber, year, mode);
+Future<List<Expenditure>> getExpenseList(int monthNumber, int year, int mode,int type) {
+  return db.getExpenses(monthNumber, year, mode,type);
 }

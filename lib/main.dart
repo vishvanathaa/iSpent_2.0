@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:ispent/report.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:ispent/utilities.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 double _totalExpense = 0;
 double _budget = 0;
@@ -20,7 +21,7 @@ int _year = DateTime.now().year;
 int _monthNumber = DateTime.now().month;
 List<Expenditure> _expenditureList;
 bool visible = true;
-
+int _swapIndex = 0;
 var db = new DatabaseHelper();
 DateTime _currentDateTime = DateTime.now();
 
@@ -35,8 +36,8 @@ class ISpentContainer extends StatelessWidget {
         initialRoute: '/',
         routes: <String, WidgetBuilder>{
           'first': (BuildContext context) => new ISpentHome(),
-          '/second': (BuildContext context) => new ExpenseScreen(),
-          '/expense': (BuildContext context) => new ExpenseScreen(),
+          '/second': (BuildContext context) => new ExpenseScreen(data:0),
+          '/expense': (BuildContext context) => new ExpenseScreen(data:0),
         },
         home: ISpentHome());
   }
@@ -99,6 +100,7 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
               _tile('Shubharathna', 'Udupi', Icons.person),
               _tile('Naveena Bhandari', 'Shimoga', Icons.person),
               _tile('Jayalakshmi', 'Chikmagaluru', Icons.person),
+              _tile('Vijay Kumar Shetty', 'Amasebail', Icons.person),
               _tile('Madhuri Pai', 'Mangalore', Icons.person),
             ],
           ),
@@ -119,8 +121,9 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
                   onPressed: () {
                     setState(() {
                       if (_mode == 0) {
-                        var newDate =
-                            Jiffy(_currentDateTime).subtract(months: 1).dateTime;
+                        var newDate = Jiffy(_currentDateTime)
+                            .subtract(months: 1)
+                            .dateTime;
                         _monthNumber = newDate.month;
                         _currentDateTime = newDate;
                         _year = newDate.year;
@@ -142,7 +145,8 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
                 onPressed: () {
                   setState(() {
                     if (_mode == 0) {
-                      var newDate = Jiffy(_currentDateTime).add(months: 1).dateTime;
+                      var newDate =
+                          Jiffy(_currentDateTime).add(months: 1).dateTime;
                       _monthNumber = newDate.month;
                       _currentDateTime = newDate;
                       _year = newDate.year;
@@ -176,10 +180,19 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
             );
           }).toList(),
         ),
+
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             // Add your onPressed code here!
-            Navigator.pushNamed(context, '/second');
+            /*Navigator.pushNamed(context, '/second');*/
+            Navigator.of(context).push(
+              // With MaterialPageRoute, you can pass data between pages,
+              // but if you have a more complex app, you will quickly get lost.
+              MaterialPageRoute(
+                builder: (context) =>
+                    ExpenseScreen(data: 0),
+              ),
+            );
           },
           icon: Icon(Icons.add),
           label: Text(
@@ -189,7 +202,7 @@ class _HomePageState extends State<ISpentHome> implements HomeContract {
               wordSpacing: 0.3,
             ),
           ),
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.pink,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
@@ -218,20 +231,78 @@ class _ChoiceCardState extends State<ChoiceCard> {
               clipBehavior: Clip.antiAliasWithSaveLayer,
               color: Colors.grey.shade800,
               child: Column(children: [
+                Padding(
+                    padding: EdgeInsets.only(top: 8),
+                    child: ToggleSwitch(
+                      minWidth: 90.0,
+                      initialLabelIndex: _swapIndex,
+                      totalSwitches: 2,
+                      labels: ['EXPENSE', 'INCOME'],
+                      activeBgColors: [
+                        [Colors.pink],
+                        [Colors.green]
+                      ],
+                      inactiveBgColor: Colors.grey,
+                      inactiveFgColor: Colors.black,
+                      onToggle: (index) {
+                        setState(() {
+                          _swapIndex = index;
+                        });
+                      },
+                    )),
                 _headerBudgetView(context),
                 _separator(context),
                 _expenseListView(context),
+                _addIncomeButton(context)
+
               ])));
     } else if (choiceType == "SETTINGS") {
       return AppSettings();
     } else if (choiceType == "REPORT") {
       return new Report(_monthNumber, _year, _mode);
     } else {
-      return new TransactionList(_mode,_year,_monthNumber,"");
+      return new TransactionList(_mode, _year, _monthNumber, "");
     }
   }
 }
+Widget _addIncomeButton(BuildContext context)
+{
+  if(_swapIndex == 1) {
+    return TextButton.icon(
+      style: TextButton.styleFrom(
+        textStyle: TextStyle(color: Colors.white),
+        backgroundColor: Colors.green,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
 
+        ),
+
+      ),
+
+      icon: const Icon(Icons.add, color: Colors.white),
+      //`Icon` to display
+      label: Text(
+        'ADD INCOME',
+        style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold),
+      ),
+      onPressed: () {
+        Navigator.of(context).push(
+          // With MaterialPageRoute, you can pass data between pages,
+          // but if you have a more complex app, you will quickly get lost.
+          MaterialPageRoute(
+            builder: (context) =>
+                ExpenseScreen(data: 1),
+          ),
+        );
+      },
+    );
+  }else{
+    return SizedBox(height: 0.01);
+  }
+}
 Widget _separator(BuildContext context) {
   return Row(children: [
     Expanded(
@@ -251,74 +322,84 @@ Widget _separator(BuildContext context) {
 }
 
 Widget _headerBudgetView(BuildContext context) {
-  return Row(
-    children: [
-      Expanded(
-        child: Padding(
-          padding: EdgeInsets.only(left: 12.0, bottom: 3.0, top: 20.0),
-          child: Text(
-            "BUDGET",
-            style: new TextStyle(
-              //fontFamily: "Quicksand",
-              fontSize: 16.0,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+  if(_swapIndex == 0) {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(left: 12.0, bottom: 3.0, top: 5.0),
+            child: Text(
+              'BUDGET',
+              style: new TextStyle(
+                //fontFamily: "Quicksand",
+                fontSize: 16.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
-      ),
-      Align(
-        alignment: Alignment.centerRight,
-        child: Padding(
-          padding: EdgeInsets.only(right: 35.0, bottom: 3.0, top: 20.0),
-          child: Text(
-            _budget.toStringAsFixed(2),
-            style: new TextStyle(
-              //fontFamily: "Quicksand",
-              fontSize: 16.0,
-              color: Colors.lightGreen,
-              fontWeight: FontWeight.bold,
+        Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: EdgeInsets.only(right: 35.0, bottom: 3.0, top: 5.0),
+            child: Text(
+              _budget.toStringAsFixed(2),
+              style: new TextStyle(
+                //fontFamily: "Quicksand",
+                fontSize: 16.0,
+                color: Colors.lightGreen,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      )
-    ],
-  );
+        )
+      ],
+    );
+  }
+  else{
+    return SizedBox(height: 0.5);
+  }
 }
 
 Widget _balanceView(BuildContext context) {
-  return Row(
-    children: [
-      Expanded(
-        child: Padding(
-          padding: EdgeInsets.only(left: 12.0, bottom: 5.0, top: 2.0),
-          child: Text(
-            "BALANCE",
-            style: new TextStyle(
-              fontSize: 16.0,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+  if(_swapIndex == 0) {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(left: 12.0, bottom: 5.0, top: 2.0),
+            child: Text(
+              "BALANCE",
+              style: new TextStyle(
+                fontSize: 16.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
-      ),
-      Align(
-        alignment: Alignment.centerRight,
-        child: Padding(
-          padding: EdgeInsets.only(right: 35.0, bottom: 5.0, top: 3.0),
-          child: Text(
-            (_budget - _totalExpense).toStringAsFixed(2),
-            style: new TextStyle(
-              //fontFamily: "Quicksand",
-              fontSize: 16.0,
-              color: Colors.lightBlueAccent,
-              fontWeight: FontWeight.bold,
+        Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: EdgeInsets.only(right: 35.0, bottom: 5.0, top: 3.0),
+            child: Text(
+              (_budget - _totalExpense).toStringAsFixed(2),
+              style: new TextStyle(
+                //fontFamily: "Quicksand",
+                fontSize: 16.0,
+                color: Colors.lightBlueAccent,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      )
-    ],
-  );
+        )
+      ],
+    );
+  }
+  else{
+    return SizedBox(height:0.5);
+  }
 }
 
 Widget _headerExpenseView(BuildContext context) {
@@ -328,7 +409,7 @@ Widget _headerExpenseView(BuildContext context) {
         child: Padding(
           padding: EdgeInsets.only(left: 12.0, bottom: 5.0, top: 5),
           child: Text(
-            "EXPENSE",
+            _swapIndex ==0?"EXPENSE":"TOTAL INCOME",
             style: new TextStyle(
               //fontFamily: "Quicksand",
               fontSize: 16.0,
@@ -347,7 +428,7 @@ Widget _headerExpenseView(BuildContext context) {
             style: new TextStyle(
               //fontFamily: "Quicksand",
               fontSize: 16.0,
-              color: Colors.redAccent,
+              color: _swapIndex==0?Colors.redAccent:Colors.greenAccent,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -357,8 +438,8 @@ Widget _headerExpenseView(BuildContext context) {
   );
 }
 
-Future<List<Expenditure>> getExpenseList() {
-  return db.getExpenses(_monthNumber, _year, _mode);
+Future<List<Expenditure>> getExpenseList(int type) {
+  return db.getExpenses(_monthNumber, _year, _mode,type);
 }
 
 double getTotalExpense(List<Expenditure> expenses) {
@@ -371,14 +452,14 @@ double getTotalExpense(List<Expenditure> expenses) {
 
 Widget _expenseListView(BuildContext context) {
   return FutureBuilder<List<Expenditure>>(
-      future: getExpenseList(),
+      future: getExpenseList(_swapIndex),
       builder: (context, snapshot) {
         if (snapshot.hasError) print(snapshot.error);
         _expenditureList = snapshot.data;
         if (snapshot.hasData) {
           _totalExpense = getTotalExpense(_expenditureList);
           return new Column(children: [
-            ExpenditureList(_expenditureList,_mode,_year,_monthNumber),
+            ExpenditureList(_expenditureList, _mode, _year, _monthNumber,_swapIndex),
             _separator(context),
             _headerExpenseView(context),
             _separator(context),
@@ -391,8 +472,9 @@ Widget _expenseListView(BuildContext context) {
 
 ListTile _tile(String title, String subtitle, IconData icon) {
   return ListTile(
-    title: Text(title,
-       ),
+    title: Text(
+      title,
+    ),
     subtitle: Text(subtitle),
     leading: Icon(
       icon,

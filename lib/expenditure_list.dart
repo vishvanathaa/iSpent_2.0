@@ -8,12 +8,12 @@ class ExpenditureList extends StatelessWidget {
   final int mode;
   final int year;
   final int monthNumber;
-
+  final int type;
   ExpenditureList(
     this.expenses,
     this.mode,
     this.year,
-    this.monthNumber, {
+    this.monthNumber,this.type, {
     Key key,
   }) : super(key: key);
 
@@ -23,7 +23,7 @@ class ExpenditureList extends StatelessWidget {
     return ConstrainedBox(
         constraints: new BoxConstraints(
           //minHeight: 300.0,
-          maxHeight: MediaQuery.of(context).size.height * 0.50,
+          maxHeight: MediaQuery.of(context).size.height * 0.45,
         ),
         child: ListView.builder(
           scrollDirection: Axis.vertical,
@@ -50,7 +50,7 @@ class ExpenditureList extends StatelessWidget {
                                             mode,
                                             year,
                                             monthNumber,
-                                            expenseList[index].itemName)),
+                                            expenseList[index].itemName,type)),
                                   );
                                 })),
                     Expanded(
@@ -111,7 +111,7 @@ List<Expenditure> getConsolidatedList(List<Expenditure> expenses) {
           distinctCategory[j].itemName,
           null,
           distinctCategory[j].icon,
-          categoryCount.toString()));
+          categoryCount.toString(),0));
     }
   }
   return _categoryExpense;

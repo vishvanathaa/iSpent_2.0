@@ -6,9 +6,9 @@ import 'package:ispent/home_presenter.dart';
 import 'package:intl/intl.dart';
 import 'package:ispent/utilities.dart';
 import 'package:ispent/database/database_helper.dart';
-
+import 'package:toggle_switch/toggle_switch.dart';
 var db = new DatabaseHelper();
-
+int _swapIndex = 0;
 class TransactionList extends StatefulWidget {
   final int mode;
   final int year;
@@ -48,7 +48,30 @@ class _TransactionListExpenseState extends State<TransactionList>
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     color: Colors.indigo[50],
                     child: Column(children: [
-                      Text(snapshot.data.length.toString() + " item(s) found"),
+                      Padding(
+                          padding: EdgeInsets.only(top: 8),
+                          child: ToggleSwitch(
+                            minWidth: 90.0,
+                            initialLabelIndex: _swapIndex,
+                            totalSwitches: 2,
+                            labels: ['EXPENSE', 'INCOME'],
+                            activeBgColors: [
+                              [Colors.pink],
+                              [Colors.green]
+                            ],
+                            inactiveBgColor: Colors.black26,
+                            inactiveFgColor: Colors.black,
+                            onToggle: (index) {
+                              setState(() {
+                                _swapIndex = index;
+                              });
+                            },
+                          )),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(snapshot.data.length.toString() + " item(s) found"),
+                      )
+                      ,
                       ConstrainedBox(
                           constraints: new BoxConstraints(
                             //minHeight: 300.0,
@@ -161,7 +184,7 @@ class _TransactionListExpenseState extends State<TransactionList>
                                                                   .id,
                                                               _filteredExpenses[
                                                                       index]
-                                                                  .amount))),
+                                                                  .amount,0))),
                                                 );
                                               },
                                             ),
@@ -189,5 +212,5 @@ class _TransactionListExpenseState extends State<TransactionList>
 }
 
 Future<List<Expenditure>> getExpenseList(int monthNumber, int year, int mode) {
-  return db.getExpenses(monthNumber, year, mode);
+  return db.getExpenses(monthNumber, year, mode,_swapIndex);
 }

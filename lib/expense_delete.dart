@@ -199,7 +199,7 @@ class _DeleteExpenseState extends State<DeleteExpenseScreen> {
                                         widget.args.title,
                                         widget.args.entryDate,
                                         widget.args.iconName,
-                                        widget.args.note);
+                                        widget.args.note,0);
                                     expenseObj.setExpenditureId(widget.args.id);
                                     updateRecord();
                                    /*Navigator.pop(context, () {
@@ -236,7 +236,7 @@ class _DeleteExpenseState extends State<DeleteExpenseScreen> {
                                           widget.args.title,
                                           widget.args.entryDate,
                                           widget.args.iconName,
-                                          widget.args.note);
+                                          widget.args.note,0);
                                       expenseObj
                                           .setExpenditureId(widget.args.id);
                                       delete(expenseObj);
@@ -266,7 +266,7 @@ class _DeleteExpenseState extends State<DeleteExpenseScreen> {
         widget.args.title,
         entryDate,
         widget.args.iconName,
-        noteController.text);
+        noteController.text,0);
 
     expense.setExpenditureId(widget.args.id);
     await db.update(expense);

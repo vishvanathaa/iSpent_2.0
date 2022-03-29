@@ -25,7 +25,7 @@ class _AddExpenseState extends State<AddExpenseScreen> {
   final format = DateFormat("dd-MM-yyyy");
   var entryDate = DateTime.now().toString();
   final doubleRegex = RegExp(r'[+-]?([0-9]*[.])?[0-9]+', multiLine: true);
-  bool _autoValidate = false;
+ // bool _autoValidate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +45,7 @@ class _AddExpenseState extends State<AddExpenseScreen> {
                 padding: const EdgeInsets.all(2),
                 child: Column(children: [
                   IconButton(
+                    onPressed:null,
                     icon: new Icon(
                       widget.args.icon,
                       color: Colors.indigo,
@@ -189,12 +190,12 @@ class _AddExpenseState extends State<AddExpenseScreen> {
                           // Add your onPressed code here!
                           if (_formKey.currentState.validate()) {
                             _formKey.currentState.save();
-                            addRecord(false, entryDate);
+                            addRecord(false, entryDate,widget.args.type);
                             Navigator.pushNamed(context, 'first');
                           } else {
                             //    If all data are not valid then start auto validation.
                             setState(() {
-                              _autoValidate = true;
+                              //_autoValidate = true;
                             });
                           }
                         },
@@ -204,7 +205,8 @@ class _AddExpenseState extends State<AddExpenseScreen> {
     );
   }
 
-  Future addRecord(bool isEdit, entryDate) async {
+  Future addRecord(bool isEdit, entryDate, int type) async {
+
     var db = new DatabaseHelper();
     var expense = new Expenditure(
         double.parse(
@@ -212,11 +214,12 @@ class _AddExpenseState extends State<AddExpenseScreen> {
         widget.args.title,
         entryDate,
         widget.args.category.toString(),
-        noteController.text);
+        noteController.text,type);
     if (isEdit) {
       expense.setExpenditureId(12);
       await db.update(expense);
     } else {
+
       await db.saveUser(expense);
     }
   }

@@ -163,7 +163,10 @@ IconData getIconName(String iconName) {
       iconData = Icons.loyalty;
       break;
     case "business":
-      iconData = Icons.loyalty;
+      iconData = Icons.business;
+      break;
+    case "alarm":
+      iconData = Icons.alarm;
       break;
     case "location_city":
       iconData = Icons.location_city;
@@ -206,6 +209,9 @@ IconData getIconName(String iconName) {
       break;
     case "local_cafe":
       iconData = Icons.local_cafe;
+      break;
+    case "account_balance_wallet":
+      iconData = Icons.account_balance_wallet;
       break;
   }
   return iconData;

@@ -8,5 +8,6 @@ class ScreenArguments {
   final String note;
   final String entryDate;
   final double amount;
-  ScreenArguments(this.title, this.icon,this.category,this.iconName,this.entryDate,this.note,this.id,this.amount);
+  final int type;
+  ScreenArguments(this.title, this.icon,this.category,this.iconName,this.entryDate,this.note,this.id,this.amount,this.type);
 }
